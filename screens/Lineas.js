@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     },
 });
 
-const API_URL = 'http://192.168.100.28:8080/buses/'; // Remplaza con la URL de tu API  
+const API_URL = 'http://192.168.100.28:8080/buses/'; // Remplaza con la URL de tu ap
 const browserApi = 'http://192.168.100.28:8080/browseBuses/'; // Remplaza con la URL de tu API  
 
 const Lineas = ({navigation}) => {
