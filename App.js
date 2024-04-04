@@ -1,7 +1,7 @@
 import React from "react";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from "@react-navigation/native";
-import Ionicons from 'react-native-vector-icons/Ionicons'; // Ejemplo usando Ionicons
+import Ionicons from 'react-native-vector-icons/Ionicons'; // Ejemplo usando Ionicons onc
 import LoginBus from './screens/LoginBus';
 import Lineas from './screens/Lineas';
 import Suscripcion from './screens/Suscripcion';
