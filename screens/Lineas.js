@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {StyleSheet, Text, View, TextInput, SafeAreaView, FlatList, StatusBar, Button,TouchableOpacity} from 'react-native';
+import axios from 'axios';
+import Paradas from "./Paradas";
 
 const styles = StyleSheet.create({
     container: {
@@ -50,60 +52,73 @@ const styles = StyleSheet.create({
     },
 });
 
-const DATA = [
-    {
-      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-      title: 'Origen',
-      origin:'Boulevares del cimatario',
-      destination:'Fracc Vistana Flores',
-      rute_number:'07',
-    },
-    {
-      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-      title: 'Origen',
-      origin:'Puertas de San Miguel',      
-      destination:'Doctores del bosque',
-      rute_number:'08',      
-    },
-    {
-      id: '58694a0f-3da1-471f-bd96-145571e29d72',
-      title: 'Origen',
-      origin:'San juan de los cabos',
-      destination:'Azucenas del rio',
-      rute_number:'04',
-    },
-  ];
-  
+const API_URL = 'http://192.168.100.28:8080/buses/'; // Remplaza con la URL de tu API  
+const browserApi = 'http://192.168.100.28:8080/browseBuses/'; // Remplaza con la URL de tu API  
 
-  const Item = ({title,origin,destination,rute_number}) => (
-    <View style={styles.item}>
-        <View style={{width:'75%',height:80}}>
-            <Text style={styles.origen}>{title}</Text>
-            <Text>{origin}</Text>
-            <Text style={styles.origen}>Destino</Text> 
-            <Text>{destination}</Text>   
-        </View>  
-        <View style={{width:'25%',height:80,justifyContent:'center',alignItems:'center'}}>
-            <TouchableOpacity style={{width:60,height:40,borderRadius:18,borderColor:'blue',backgroundColor:'#5DC6DE',borderWidth:2,justifyContent:'center'}}>
-                <Text style={{color:'white',alignSelf:'center',textAlign:'center'}}>{rute_number}</Text>
-            </TouchableOpacity>
-        </View>  
-    </View>
-  );
+const Lineas = ({navigation}) => {
+    const [routes, setRoutes] = useState([]);
 
-const Lineas = () => {
+    const Item = ({ title, origin, destination, rute_number }) => (
+        <View style={styles.item}>
+            <View style={{ width: '75%', height: 80 }}>
+                <Text style={styles.origen}>Origen</Text>
+                <Text>{origin}</Text>
+                <Text style={styles.origen}>Destino</Text>
+                <Text>{destination}</Text>
+            </View>
+            <View style={{ width: '25%', height: 80, justifyContent: 'center', alignItems: 'center' }}>
+                <TouchableOpacity style={{ width: 60, height: 40, borderRadius: 18, borderColor: 'blue', backgroundColor: '#5DC6DE', borderWidth: 2, justifyContent: 'center' }}
+                onPress={()=>{navigation.navigate("buslocation",{rute_number,title})}}>
+                    <Text style={{ color: 'white', alignSelf: 'center', textAlign: 'center' }}>{title}</Text>
+                </TouchableOpacity>
+            </View>
+        </View>
+    );
+
+    useEffect(() => {
+        axios.get(API_URL)
+            .then(response => {
+                setRoutes(response.data);
+            })
+            .catch(error => {
+                console.error('Error fetching routes:', error);
+            });
+    }, []);
+
+    const browser = (text) => {
+        if(text.trim() === ""){
+            axios.get(API_URL)
+            .then(response => {
+                // Maneja la respuesta como desees                
+                setRoutes(response.data);
+            })
+            .catch(error => {
+                console.error('Error browsing buses:', error);
+            });
+        } else {
+            axios.get(browserApi + text)
+            .then(response => {
+                // Maneja la respuesta como desees
+                console.log(response.data);
+                setRoutes(response.data);
+            })
+            .catch(error => {
+                console.error('Error browsing buses:', error);
+            });
+        }
+    };
+    
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Lineas</Text>
             <Text style={styles.subtitle}>Encuentra todas las lineas de los autobuses</Text>
-            <TextInput placeholder="Orden numerico"
-            style={styles.input}/>
+            <TextInput placeholder="Orden numerico" style={styles.input} onChangeText={(text)=>browser(text)}/>
 
             <SafeAreaView style={styles.flatList}>
                 <FlatList
-                    data={DATA}
-                    renderItem={({item}) => <Item title={item.title} origin={item.origin} destination={item.destination} rute_number={item.rute_number} />}
-                    keyExtractor={item => item.id}
+                    data={routes}
+                    renderItem={({ item }) => <Item title={item.nombre} origin={item.origen} destination={item.destino} rute_number={item.id_ruta.toString()} />}
+                    keyExtractor={item => item.id_ruta.toString()}
                 />
             </SafeAreaView>
         </View>
