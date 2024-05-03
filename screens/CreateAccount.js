@@ -23,7 +23,7 @@ const CreateAccount = ({ navigation }) => {
       console.log(data.username, data.email, data.tel, data.password);
   
       axios
-        .post('http://192.168.100.28:8080/registerUser', data)
+        .post('http://10.13.10.191:8080/registerUser', data)
         .then((response) => {
           alert('Usuario creado correctamente');
         })

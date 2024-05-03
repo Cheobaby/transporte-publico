@@ -32,12 +32,15 @@ const Item = ({title}) => (
 
 const Home=({navigation,route})=>{    
   const [nombreUsuario,setnombreUsuario]=useState('');
-
+  const [token,setToken]=useState('');
+  const [id,setId]=useState(0);
   const userData = async () => {
     try {
-      const response = await axios.get(`http://192.168.100.28:8080/getUserById/${route.params.idUser}`);
+      const response = await axios.get(`http://10.13.10.191:8080/getUserById/${route.params.idUser}`);
       console.log("DATA RESPONSE ", response.data);
-      setnombreUsuario(response.data[0].nombre);
+      setnombreUsuario(response.data[0].nombre);    
+      setToken(response.data[0].token);
+      setId(route.params.idUser);
     } catch (error) {
       console.log("Error: ", error);
     }
@@ -74,7 +77,7 @@ const Home=({navigation,route})=>{
       <View style={styles.body}>
           <Text style={{padding:20,fontWeight:'bold',fontSize:17,}}>Pagar con</Text>
           <View style={styles.firstRow}>
-              <TouchableOpacity style={styles.items} onPress={()=>(navigation.navigate("Qr"))}>
+            <TouchableOpacity style={styles.items} onPress={() => navigation.navigate("Qr", {id,token})}>
                 <Ionicons name="qr-code-outline" size={35}></Ionicons>
                 <Text style={{fontWeight:'bold'}}>QR</Text>
               </TouchableOpacity>

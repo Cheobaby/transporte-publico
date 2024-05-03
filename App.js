@@ -9,7 +9,6 @@ import DetallesPago from "./screens/DetallesPago";
 import User from './screens/User';
 import Home from './screens/Home';
 import MisLugares from './screens/MisLugares';
-import Paypal from './screens/PaymentScreen';
 import Qr from './screens/Qr';
 import CodeBar from './screens/CodeBar';
 import { createStackNavigator } from "@react-navigation/stack";
@@ -17,6 +16,7 @@ import Paradas from "./screens/Paradas";
 import Login from './screens/Login';
 import CreateAccount from "./screens/CreateAccount";
 import BusLocation from "./screens/BusLocation";
+import Paypal from './screens/Paypal';
 const Stack=createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -86,11 +86,10 @@ export default function App() {
         <Stack.Screen name="Login" component={LoginBus} options={{ headerShown: false }}/>
         <Stack.Screen name="Qr" component={Qr} options={{ headerShown: false }}/>
         <Stack.Screen name="codebar" component={CodeBar} options={{ headerShown: false }}/> 
-        <Stack.Screen name="Paypal" component={Paypal} options={{ headerShown: false }}/>
         <Stack.Screen name="Paradas" component={Paradas} options={{ headerShown: false }}/>
         <Stack.Screen name="user" component={User} options={{ headerShown: false }}/>     
         <Stack.Screen name="buslocation" component={BusLocation} options={{ headerShown: false }}/>         
-
+        <Stack.Screen name="paypal" component={Paypal} options={{ headerShown: false }}/>         
         <Stack.Screen 
           name="Main" 
           component={MainNavigator} 

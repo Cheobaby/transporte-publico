@@ -84,7 +84,7 @@ const Login=({navigation})=>{
           password: password,
         };              
         axios
-          .post('http://192.168.100.28:8080/startSesion', credentials)
+          .post('http://10.13.10.191:8080/startSesion', credentials)
           .then((response) => {
             //console.log(response.data);
             //navigation.navigate('Main');
@@ -95,11 +95,12 @@ const Login=({navigation})=>{
                 nombre=response.data[0].nombre;  
                 correo=response.data[0].email;  
                 tel=response.data[0].telefono; 
+                token=response.data[0].token;                
                 saveUserData(id.toString(),nombre,correo,tel);
                 //console.log(id);
 
                 //id_cli=response.data[0].id_cliente;                
-                navigation.navigate('Main', { idUser: id });
+                navigation.navigate('Main', { idUser: id});
             }
           })
           .catch((error) => {

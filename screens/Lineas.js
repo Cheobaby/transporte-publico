@@ -52,8 +52,8 @@ const styles = StyleSheet.create({
     },
 });
 
-const API_URL = 'http://192.168.100.28:8080/buses/'; // Remplaza con la URL de tu ap
-const browserApi = 'http://192.168.100.28:8080/browseBuses/'; // Remplaza con la URL de tu API  
+const API_URL = 'http://10.13.10.191:8080/buses/'; // Remplaza con la URL de tu ap
+const browserApi = 'http://10.13.10.191:8080/browseBuses/'; // Remplaza con la URL de tu API  
 
 const Lineas = ({navigation}) => {
     const [routes, setRoutes] = useState([]);

@@ -38,7 +38,7 @@ const styles=StyleSheet.create({
 
 const Paradas = ({ navigation, route }) => {
     const ruteNumber = route.params.rute_number.toString();
-    const API = `http://192.168.100.28:8080/getBusStops/${ruteNumber}`;
+    const API = `http://10.13.10.191:8080/getBusStops/${ruteNumber}`;
     const [data, setData] = useState([]);    
 
     useEffect(() => {

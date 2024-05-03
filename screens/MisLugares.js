@@ -74,7 +74,7 @@ const MisLugares = ({ navigation, route }) => {
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://192.168.100.28:8080/getSavedLocations/${route.params.idUser}`);
+        const response = await axios.get(`http://10.13.10.191:8080/getSavedLocations/${route.params.idUser}`);
         setData(response.data);
       } catch (error) {
         console.log('Error al obtener los datos de la API:', error);
@@ -93,7 +93,7 @@ const MisLugares = ({ navigation, route }) => {
     };
     setOrigin(selectedLocation);
     getAddressFromLocation(selectedLocation);
- 
+
     // Animar el mapa hacia la ubicación seleccionada
     mapRef.current.animateToRegion({
       latitude: selectedLocation.latitude,
@@ -102,8 +102,8 @@ const MisLugares = ({ navigation, route }) => {
       longitudeDelta: 0.06,
     }, 1000);
   };
- 
- 
+
+
   const renderItem = ({ item }) => (
     <View style={{ ...styles.item, width: width * 0.9, marginHorizontal: 15, height: height * 0.14 }}>
       <View style={{ width: '20%', justifyContent: 'center', alignItems: 'center' }}>
@@ -130,7 +130,7 @@ const MisLugares = ({ navigation, route }) => {
       nameLocation: addressName
     };
     axios
-      .post('http://192.168.100.28:8080/saveLocation', dataLocation)
+      .post('http://10.13.10.191:8080/saveLocation', dataLocation)
       .then((response) => {
         if (response.data != 0) {
           setModalVisible(false);
@@ -145,28 +145,28 @@ const MisLugares = ({ navigation, route }) => {
   };
 
 
-  const updateName=async()=>{
-    const data={nombre:nameAddress};
-    axios    
-    .put(`http://192.168.100.28:8080/updateLocation/${id}`,data)
-    .then((response) => {
-      if (response.data != 0) {        
-        setModalSettings(!modalSettings);
-        setModalUpdate(!modalUpdate);
-        setNameAddress('');
-        alert("Chambio realizado");
-      }
-    })
-    .catch((error) => {
-      //console.log('Error al iniciar sesión');
-      alert("Hubo un error");
-    });
+  const updateName = async () => {
+    const data = { nombre: nameAddress };
+    axios
+      .put(`http://10.13.10.191:8080/updateLocation/${id}`, data)
+      .then((response) => {
+        if (response.data != 0) {
+          setModalSettings(!modalSettings);
+          setModalUpdate(!modalUpdate);
+          setNameAddress('');
+          alert("Chambio realizado");
+        }
+      })
+      .catch((error) => {
+        //console.log('Error al iniciar sesión');
+        alert("Hubo un error");
+      });
   };
 
 
   const deleteLocation = async () => {
     axios
-      .delete(`http://192.168.100.28:8080/deleteSavedLocation/${id}`)
+      .delete(`http://10.13.10.191:8080/deleteSavedLocation/${id}`)
       .then((response) => {
         if (response.data != 0) {
           setModalSettings(!modalSettings);
@@ -205,7 +205,7 @@ const MisLugares = ({ navigation, route }) => {
               getAddressFromLocation(newCoords);
             }}
           />
-          <MapViewDirections apikey={'AIzaSyCqhWe4ZuDlnDCnpMJLOPvtNC0u6m_CxCU'} />
+          <MapViewDirections apikey={'api-key'} />
         </MapView>
       </View>
       <View style={styles.list}>
@@ -270,7 +270,7 @@ const MisLugares = ({ navigation, route }) => {
           >
             <View style={styles.centeredView}>
               <View style={styles.modalViewSettings}>
-                <TouchableOpacity onPress={() => {setModalUpdate(!modalUpdate)}} style={{ flexDirection: 'row' }}>
+                <TouchableOpacity onPress={() => { setModalUpdate(!modalUpdate) }} style={{ flexDirection: 'row' }}>
                   <Text style={{ fontWeight: 'bold', fontSize: 15, paddingHorizontal: 18 }}>Editar</Text>
                   <Icon size={22} color={'blue'} name="create-outline"></Icon>
                 </TouchableOpacity>
@@ -285,21 +285,21 @@ const MisLugares = ({ navigation, route }) => {
         </View>
         <View style={styles.centeredView}>
           <Modal
-              animationType="fade"
-              transparent={true}
-              visible={modalUpdate}
-              onRequestClose={() => {
-                setModalUpdate(!modalUpdate);
-              }}
-            >
+            animationType="fade"
+            transparent={true}
+            visible={modalUpdate}
+            onRequestClose={() => {
+              setModalUpdate(!modalUpdate);
+            }}
+          >
             <View style={styles.centeredView}>
               <View style={styles.modalUpdateLocations}>
                 <View style={styles.headerUpdateSettings}>
-                  <Text style={{fontWeight:'bold',color:'white'}}>Actualizar</Text>
+                  <Text style={{ fontWeight: 'bold', color: 'white' }}>Actualizar</Text>
                 </View>
                 <Text style={{ alignSelf: 'flex-start', marginHorizontal: 20, color: 'white', marginVertical: 8, fontWeight: 'bold' }}>Nombre:</Text>
                 <TextInput style={{
-                  backgroundColor: '#ededed', width: width * 0.80, height: 30, borderRadius: 7, paddingHorizontal: 15, shadowColor: '#000',                  
+                  backgroundColor: '#ededed', width: width * 0.80, height: 30, borderRadius: 7, paddingHorizontal: 15, shadowColor: '#000',
                   shadowOffset: {
                     width: 0,
                     height: 2,
@@ -310,10 +310,10 @@ const MisLugares = ({ navigation, route }) => {
                 }}
                   value={nameAddress}
                   onChangeText={(nameAddress) => { setNameAddress(nameAddress) }} />
-                <View style={{flexDirection:'row',width:width*0.80,height:height*0.05,alignItems:'center',justifyContent:'space-evenly',marginTop:25}}>
+                <View style={{ flexDirection: 'row', width: width * 0.80, height: height * 0.05, alignItems: 'center', justifyContent: 'space-evenly', marginTop: 25 }}>
                   <Button color={'blue'} title='Guardar' onPress={updateName} />
-                  <Button color={'red'} title='Cancelar' onPress={() => { setModalUpdate(!modalUpdate),setModalSettings(!modalSettings)}} />
-                </View>            
+                  <Button color={'red'} title='Cancelar' onPress={() => { setModalUpdate(!modalUpdate), setModalSettings(!modalSettings) }} />
+                </View>
               </View>
             </View>
           </Modal>
@@ -406,7 +406,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  headerUpdateSettings:{
+  headerUpdateSettings: {
     width: width * 0.90,
     height: height * 0.05,
     backgroundColor: 'blue',
@@ -415,12 +415,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  modalUpdateLocations:{    
+  modalUpdateLocations: {
     height: height * 0.25,
     width: width * 0.90,
     borderRadius: 15,
     backgroundColor: '#a8bfff',
-    alignItems: 'center',    
+    alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,

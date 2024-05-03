@@ -13,41 +13,17 @@ const BusLocation = ({ navigation, route }) => {
   const [buttonBusDirection, setButtonBusDirection] = React.useState('Ida');
   const [data, setData] = React.useState([]);
   const mapViewRef = React.useRef(null);
-
+  const [cantPersonas,setCantPersonas]=React.useState('');
 
   const [origin, setOrigin] = React.useState({
     latitude: 20.581436,
     longitude: -100.390633,
   });
-  const [destination, setDestination] = React.useState({
-    latitude: 20.589386,
-    longitude: -100.410147,
+  const [busLocation, setBusLocation] = React.useState({
+    latitude: 0,
+    longitude: 0,
   });
   const [locationAddress, setLocationAddress] = React.useState(null);
-
-  React.useEffect(() => {
-    getLocationPermission();
-  }, [])
-
-  async function getLocationPermission() {
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== 'granted') {
-      alert('Permission denied');
-      return;
-    }
-    let location = await Location.getCurrentPositionAsync({});
-    const current = {
-      latitude: location.coords.latitude,
-      longitude: location.coords.longitude
-    }
-    setOrigin(current);
-    getAddressFromLocation(current);
-  }
-
-  async function getAddressFromLocation(coords) {
-    let address = await Location.reverseGeocodeAsync(coords);
-    setLocationAddress(address[0]);
-  }
 
 
   // Función para imprimir la dirección de la ubicación en la consola
@@ -60,7 +36,7 @@ const BusLocation = ({ navigation, route }) => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(`http://192.168.100.28:8080/getBusStops/${route.params.rute_number}/${busDirection}`);
+      const response = await axios.get(`http://10.13.10.191:8080/getBusStops/${route.params.rute_number}/${busDirection}`);
       setData(response.data);
       //console.log(response.data);
     } catch (error) {
@@ -82,10 +58,33 @@ const BusLocation = ({ navigation, route }) => {
     }
   }, [data]);
 
+  const getBusLocation = async () => {
+    try {
+      const response = await axios.get('http://10.13.10.191:8080/gpsLocation');
+      const { Latitud, Longitud,Movimiento} = response.data;
+      setBusLocation({
+        latitude: parseFloat(Latitud),
+        longitude: parseFloat(Longitud),        
+      });
+      setCantPersonas(Movimiento);
+      //console.log("Cantidad Personas ",Movimiento);
+      //console.log(response.data);            
+    } catch (error) {
+      console.log('Error al obtener los datos de la ubicacion del bus:', error);
+    }
+  };
 
   React.useEffect(() => {
     fetchData();
-  }, [buttonBusDirection, busDirection]);
+    getBusLocation();
+  }, [buttonBusDirection, busDirection,cantPersonas]);
+
+  React.useEffect(() => {
+    const intervalId = setInterval(() => {
+      getBusLocation();
+    }, 3000);
+    return () => clearInterval(intervalId);
+  }, []);
 
 
   const Item = ({ title, lat, long }) => (
@@ -121,6 +120,7 @@ const BusLocation = ({ navigation, route }) => {
       <View style={styles.body}>
         <MapView ref={mapViewRef} style={styles.map}>
           <Marker draggable coordinate={origin} onDragEnd={(direction) => { setOrigin(direction.nativeEvent.coordinate) }} />
+          <Marker coordinate={busLocation} icon={require('../assets/busLocation.png')} />
           {data.map((item) => (
             <Marker
               key={item.id_parada}
@@ -146,7 +146,7 @@ const BusLocation = ({ navigation, route }) => {
                   key={index}
                   origin={origin}
                   destination={destination}
-                  apikey={'AIzaSyCqhWe4ZuDlnDCnpMJLOPvtNC0u6m_CxCU'}
+                  apikey={'api-key'}
                   strokeWidth={3}
                   strokeColor="#229dff"
                 />
@@ -158,7 +158,8 @@ const BusLocation = ({ navigation, route }) => {
       <View style={styles.footer}>
         <View style={styles.footerTitle}>
           <Text style={{ fontWeight: 'bold', color: 'blue' }}>Paradas {route.params.title}</Text>
-          <Text style={{ marginLeft: 20, color: 'blue' }}>Dirección:</Text>
+          <Text style={{ marginLeft: 20, color: 'blue' }}>Cant: {cantPersonas}</Text>
+          <Text style={{ marginLeft: 20, color: 'blue' }}>Dirección:</Text>          
           <TouchableOpacity onPress={() => { setBusDirection(busDirection === 1 ? 2 : 1), setButtonBusDirection(buttonBusDirection === 'Ida' ? 'Vuelta' : 'Ida') }} style={styles.busButtonDirection}>
             <Icon size={23} color={'blue'} name="compass-outline"></Icon>
             <Text style={{ marginLeft: 3, color: 'blue' }}>{buttonBusDirection}</Text>
